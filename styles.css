@@ -505,12 +505,13 @@ button, input, textarea {
 /* Scroll indicator */
 .scroll-indicator {
     position: absolute;
-    bottom: 4.5rem;
+    bottom: 1.5rem;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     flex-direction: column;
     align-items: center;
+    z-index: 10;
 }
 
 .mouse-wheel-container {
@@ -1745,6 +1746,10 @@ a.info-value:hover {
 
     .hero-visual {
         order: -1;
+    }
+
+    .scroll-indicator {
+        display: none !important;
     }
 
     .about-container {
