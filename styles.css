@@ -1910,9 +1910,11 @@ main section.active-section {
 }
 
 [data-theme="light"] {
-    --chat-bg: rgba(255, 255, 255, 0.85);
-    --chat-border: rgba(0, 0, 0, 0.08);
-    --chat-bot-msg: rgba(0, 0, 0, 0.04);
+    --chat-bg: #ffffff;
+    --chat-border: rgba(15, 23, 42, 0.12);
+    --chat-bot-msg: #f1f5f9;
+    --chat-text: #0f172a;
+    --chat-text-muted: #64748b;
 }
 
 /* Chatbot Floating Widget */
@@ -2479,18 +2481,30 @@ button, a, input, select, textarea, .suggestion-chip, .filter-btn, .skill-tab-bt
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .chatbot-widget {
-        bottom: 55px; /* Positioned clearly above footer on mobile */
-        right: 15px;
+        bottom: 25px;
+        right: 20px;
     }
     
     .chat-window {
-        width: calc(100vw - 30px);
-        max-width: 380px;
-        height: min(480px, 75vh);
-        position: fixed;
-        bottom: 75px;
-        right: 15px;
-        z-index: 10001;
+        position: fixed !important;
+        top: 12px !important;
+        bottom: 12px !important;
+        left: 12px !important;
+        right: 12px !important;
+        width: auto !important;
+        height: auto !important;
+        max-width: none !important;
+        border-radius: 24px !important;
+        margin-bottom: 0 !important;
+        z-index: 10005 !important;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    .chatbot-widget:has(.chat-window.open) .chat-bubble-trigger,
+    .chat-bubble-trigger.active {
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transform: scale(0) !important;
     }
 
     .footer {
