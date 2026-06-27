@@ -727,9 +727,23 @@ function initChatbot() {
     let conversationHistory = [];
     let isWidgetOpened = false;
 
-    // Hardcoded API Key
-    // Hardcoded API Key (Leave empty to use the fast offline local chatbot fallback)
-    const geminiApiKey = "";
+    // API Key button in header (allows user/recruiter to unlock live AI responses)
+    const keyBtn = document.getElementById("chat-key-btn");
+    if (keyBtn) {
+        keyBtn.addEventListener("click", () => {
+            const existingKey = localStorage.getItem("user_gemini_api_key") || "";
+            const newKey = prompt("Enter your free Gemini API Key to enable live human-like Generative AI responses (saved locally in your browser):", existingKey);
+            if (newKey !== null) {
+                if (newKey.trim()) {
+                    localStorage.setItem("user_gemini_api_key", newKey.trim());
+                    alert("Gemini API Key saved successfully! The chatbot will now use live Gemini AI for all your queries.");
+                } else {
+                    localStorage.removeItem("user_gemini_api_key");
+                    alert("Gemini API Key removed. Returning to smart offline responder mode.");
+                }
+            }
+        });
+    }
 
     // Toggle Chat window
     triggerBtn.addEventListener("click", () => {
@@ -787,6 +801,9 @@ function initChatbot() {
         // Render User Message
         addUserMessage(text);
 
+        // Fetch API Key from localStorage or environment
+        const geminiApiKey = localStorage.getItem("user_gemini_api_key") || "";
+
         // Prepare request
         conversationHistory.push({
             role: "user",
@@ -795,7 +812,7 @@ function initChatbot() {
 
         // Fast-path: If no API key is configured, respond instantly using local rules
         if (!geminiApiKey) {
-            console.log("[Chatbot] No API key configured. Using local responder.");
+            console.log("[Chatbot] No API key configured. Using smart local responder.");
             const localResponse = getLocalFallbackResponse(text);
             // Simulate a slight delay for realistic chatbot feel
             const typingIndicator = showTypingIndicator();
@@ -889,13 +906,33 @@ function initChatbot() {
         tryRequestWithFallback(0);
     }
 
-    // Smart Local Fallback Response Generator
+    // Smart Local Fallback Response Generator (Human-like conversational intelligence)
     function getLocalFallbackResponse(query) {
         const text = query.toLowerCase().trim();
         const personal = portfolioConfig.personal;
-        
-        // 1. Projects
-        if (text.includes("project") || text.includes("work") || text.includes("portfolio") || text.includes("build") || text.includes("game") || text.includes("app")) {
+
+        // 1. Hiring & Opportunities
+        if (text.includes("hire") || text.includes("job") || text.includes("salary") || text.includes("available") || text.includes("join") || text.includes("opportunity") || text.includes("relocate") || text.includes("notice")) {
+            return `Yes, I am **available for full-time software engineering and AI development opportunities**! \n\n` +
+                   `I am currently interning at **L&T Technology Services (LTTS)** until completion. I am open to remote roles as well as relocation across India. You can discuss opportunities directly with me at **y.dilipkumar939245@gmail.com** or +91 9392457449!`;
+        }
+
+        // 2. Artificial Intelligence & Tech Opinions
+        if (text.includes("ai") || text.includes("generative") || text.includes("llm") || text.includes("gpt") || text.includes("claude") || text.includes("model") || text.includes("python vs") || text.includes("favorite language")) {
+            return `AI and Generative AI are my main technical passions! 🚀\n\n` +
+                   `* My primary programming language of choice is **Python** due to its rich AI ecosystem (Pandas, NumPy, Matplotlib, APIs).\n` +
+                   `* I have hands-on experience integrating **Google Gemini Pro LLMs** and building automated AI pipelines.\n` +
+                   `* I hold the **Oracle Cloud Generative AI Certified Professional** certification!`;
+        }
+
+        // 3. Hobbies & Personal Interests
+        if (text.includes("hobby") || text.includes("free time") || text.includes("interest") || text.includes("like to do") || text.includes("fun") || text.includes("space")) {
+            return `Outside of software engineering, I am deeply fascinated by **space tech and astronomy**! In fact, I served as a Campus Ambassador for the **Agnirva Space Community**, helping organize space webinars.\n\n` +
+                   `I also enjoy building automated scripts, exploring new tech tools, and participating in tech innovation events!`;
+        }
+
+        // 4. Projects
+        if (text.includes("project") || text.includes("work") || text.includes("portfolio") || text.includes("build") || text.includes("game") || text.includes("app") || text.includes("campus care") || text.includes("health")) {
             let res = "Here are the key projects I have built:\n\n";
             portfolioConfig.projects.forEach(p => {
                 res += `* **${p.title}** (${p.category}): ${p.description}\n`;
@@ -914,7 +951,7 @@ function initChatbot() {
             return res;
         }
 
-        // 2. Skills
+        // 5. Skills
         if (text.includes("skill") || text.includes("expert") || text.includes("languages") || text.includes("python") || text.includes("sql") || text.includes("tech") || text.includes("tool") || text.includes("c lang") || text.includes("gemini")) {
             let res = "Here is an overview of my technical skills:\n\n";
             if (portfolioConfig.skills.languages) {
@@ -930,7 +967,7 @@ function initChatbot() {
             return res;
         }
 
-        // 3. Certifications
+        // 6. Certifications
         if (text.includes("cert") || text.includes("license") || text.includes("credential") || text.includes("oracle") || text.includes("nptel") || text.includes("tcs") || text.includes("cisco")) {
             let res = "I hold the following professional certifications:\n\n";
             portfolioConfig.certifications.forEach(c => {
@@ -944,7 +981,7 @@ function initChatbot() {
             return res;
         }
 
-        // 4. Experience & Internships
+        // 7. Experience & Internships
         if (text.includes("experience") || text.includes("job") || text.includes("work") || text.includes("intern") || text.includes("ltts") || text.includes("resolute") || text.includes("elmas") || text.includes("agnirva")) {
             let res = "Here is a summary of my professional internships and milestones:\n\n";
             portfolioConfig.experience.forEach(exp => {
@@ -959,8 +996,8 @@ function initChatbot() {
             return res.trim();
         }
 
-        // 5. Education
-        if (text.includes("education") || text.includes("college") || text.includes("school") || text.includes("btech") || text.includes("degree") || text.includes("gvpce") || text.includes("diploma")) {
+        // 8. Education & College
+        if (text.includes("education") || text.includes("college") || text.includes("school") || text.includes("btech") || text.includes("degree") || text.includes("gvpce") || text.includes("diploma") || text.includes("marks") || text.includes("gpa")) {
             let res = "Here are my academic details:\n\n";
             portfolioConfig.education.forEach(edu => {
                 res += `* **${edu.degree}**\n  _${edu.institution}_ (${edu.duration}) - **Result: ${edu.gpa}**\n\n`;
@@ -968,8 +1005,13 @@ function initChatbot() {
             return res.trim();
         }
 
-        // 6. Contact & Socials
-        if (text.includes("contact") || text.includes("email") || text.includes("phone") || text.includes("linkedin") || text.includes("github") || text.includes("address") || text.includes("reach") || text.includes("call")) {
+        // 9. Location & Hometown
+        if (text.includes("location") || text.includes("from") || text.includes("live") || text.includes("where") || text.includes("tenali") || text.includes("visakhapatnam") || text.includes("hyderabad")) {
+            return `I am originally from **Tenali, Andhra Pradesh, India**. I pursued my B.Tech at **Gayatri Vidya Parishad College of Engineering (GVPCE)** in Visakhapatnam, and I am currently interning at **LTTS in Hitech City, Hyderabad**!`;
+        }
+
+        // 10. Contact & Socials
+        if (text.includes("contact") || text.includes("email") || text.includes("phone") || text.includes("linkedin") || text.includes("github") || text.includes("address") || text.includes("reach") || text.includes("call") || text.includes("message")) {
             const emailClean = personal.socialLinks.email.replace("mailto:", "");
             return `You can contact me directly using any of the following channels:\n\n` +
                    `* 📧 **Email**: [${emailClean}](mailto:${emailClean})\n` +
@@ -980,21 +1022,25 @@ function initChatbot() {
                    `Feel free to message me!`;
         }
 
-        // 7. About & Biography
+        // 11. About & Biography
         if (text.includes("about") || text.includes("who are you") || text.includes("bio") || text.includes("background") || text.includes("ydk") || text.includes("dilip")) {
             return `I'm **${personal.name}**, a ${personal.title}.\n\n` +
                    `${personal.bio}\n\n` +
                    `Currently, I am working on my internship at **L&T Technology Services (LTTS)** in Hitech City, Hyderabad, focusing on AI workflow automation and Generative AI.`;
         }
 
-        // 8. Greetings
-        if (text.includes("hello") || text.includes("hi") || text.includes("hey") || text.includes("greetings") || text.includes("welcome")) {
-            return `Hello! I'm YDK's virtual assistant. I speak on behalf of Dilip, and I can give you details on my projects, skills, education, experience, and contact info. Ask me anything, or click one of the quick chips above!`;
+        // 12. Friendly Chat / Greetings / Jokes
+        if (text.includes("hello") || text.includes("hi") || text.includes("hey") || text.includes("greetings") || text.includes("how are you") || text.includes("good morning") || text.includes("good evening")) {
+            return `Hello there! 👋 I'm Dilip's AI virtual assistant. I'm doing great and ready to answer any questions about Dilip's technical background, projects, certifications, or career milestones! How can I help you today?`;
         }
 
-        // 9. Default Fallback
-        return `I'm here as YDK's representative. Since we're running in offline backup mode, I couldn't match your query directly. \n\n` +
-               `Feel free to ask about my **projects**, **skills**, **certifications**, **experience**, **education**, or how to **contact** me! Alternatively, you can reach out via email at y.dilipkumar939245@gmail.com.`;
+        if (text.includes("thank") || text.includes("thanks") || text.includes("awesome") || text.includes("great") || text.includes("good job")) {
+            return `You're very welcome! Glad I could assist. Let me know if you need anything else! 😊`;
+        }
+
+        // 13. Smart Conversational Default Fallback
+        return `I am Dilip's virtual assistant! I can tell you all about his **projects**, **internships at LTTS**, **certifications**, **technical skills in AI & Python**, or **education**.\n\n` +
+               `💡 *Tip*: If you'd like to unlock live unconstrained Generative AI answers using Gemini Pro, click the ⚙️ **Settings icon** in the top right of this chat window to enter your free Gemini API key!`;
     }
 
     // Render Message helpers
