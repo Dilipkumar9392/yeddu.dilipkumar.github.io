@@ -1899,22 +1899,30 @@ main section.active-section {
    ========================================== */
 
 :root {
-    --chat-bg: rgba(13, 17, 23, 0.75);
-    --chat-border: rgba(255, 255, 255, 0.08);
+    --chat-bg: #0f172a;
+    --chat-border: rgba(255, 255, 255, 0.12);
     --chat-primary: var(--accent-purple, #8b5cf6);
     --chat-secondary: var(--accent-cyan, #06b6d4);
     --chat-user-msg: linear-gradient(135deg, var(--accent-purple, #8b5cf6), #6d28d9);
-    --chat-bot-msg: rgba(255, 255, 255, 0.06);
-    --chat-text: var(--text-primary, #f3f4f6);
-    --chat-text-muted: var(--text-secondary, #9ca3af);
+    --chat-bot-msg: rgba(255, 255, 255, 0.07);
+    --chat-header-bg: rgba(15, 23, 42, 0.95);
+    --chat-input-bg: rgba(255, 255, 255, 0.05);
+    --chat-suggestions-bg: rgba(15, 23, 42, 0.8);
+    --chat-chip-bg: rgba(255, 255, 255, 0.06);
+    --chat-text: #f8fafc;
+    --chat-text-muted: #94a3b8;
 }
 
 [data-theme="light"] {
     --chat-bg: #ffffff;
-    --chat-border: rgba(15, 23, 42, 0.12);
+    --chat-border: rgba(139, 92, 246, 0.25);
     --chat-bot-msg: #f1f5f9;
+    --chat-header-bg: #f8fafc;
+    --chat-input-bg: #f8fafc;
+    --chat-suggestions-bg: #f8fafc;
+    --chat-chip-bg: #ffffff;
     --chat-text: #0f172a;
-    --chat-text-muted: #64748b;
+    --chat-text-muted: #475569;
 }
 
 /* Chatbot Floating Widget */
@@ -2018,7 +2026,7 @@ main section.active-section {
 /* Chat Header */
 .chat-header {
     padding: 1rem 1.25rem;
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--chat-header-bg);
     border-bottom: 1px solid var(--chat-border);
     display: flex;
     justify-content: space-between;
@@ -2227,7 +2235,7 @@ main section.active-section {
 /* Chat Input Form */
 .chat-input-form {
     padding: 0.75rem 1rem;
-    background: rgba(0, 0, 0, 0.1);
+    background: var(--chat-header-bg);
     border-top: 1px solid var(--chat-border);
     display: flex;
     align-items: center;
@@ -2236,7 +2244,7 @@ main section.active-section {
 
 .chat-input-form input {
     flex: 1;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--chat-input-bg);
     border: 1px solid var(--chat-border);
     border-radius: 12px;
     padding: 0.65rem 1rem;
@@ -2248,7 +2256,7 @@ main section.active-section {
 
 .chat-input-form input:focus {
     border-color: var(--chat-primary);
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--chat-bg);
 }
 
 .chat-send-btn {
@@ -2445,13 +2453,13 @@ main section.active-section {
     justify-content: center;
     gap: 0.4rem;
     padding: 0.6rem 0.8rem;
-    background: rgba(0, 0, 0, 0.15);
+    background: var(--chat-suggestions-bg);
     border-top: 1px solid var(--chat-border);
 }
 
 .suggestion-chip {
     flex-shrink: 0;
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--chat-chip-bg);
     border: 1px solid var(--chat-border);
     color: var(--chat-text-muted);
     padding: 0.35rem 0.75rem;
@@ -2459,6 +2467,7 @@ main section.active-section {
     font-size: 0.74rem;
     font-weight: 600;
     cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
     transition: transform var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
 }
 
