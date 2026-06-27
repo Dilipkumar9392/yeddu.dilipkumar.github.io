@@ -58,6 +58,12 @@ function initPersonalDetails() {
     linkedinLink.href = personal.socialLinks.linkedin;
     linkedinLink.textContent = personal.socialLinks.linkedin.replace("https://", "");
 
+    const phoneLink = document.getElementById("contact-phone-link");
+    if (phoneLink && personal.socialLinks.phone) {
+        phoneLink.href = personal.socialLinks.phone;
+        phoneLink.textContent = personal.socialLinks.phone.replace("tel:", "");
+    }
+
     // Fill Footer Links
     document.getElementById("footer-linkedin-link").href = personal.socialLinks.linkedin;
     document.getElementById("footer-github-link").href = personal.socialLinks.github || "#";

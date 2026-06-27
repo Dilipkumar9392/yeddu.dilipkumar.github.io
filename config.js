@@ -10,7 +10,8 @@ const portfolioConfig = {
         socialLinks: {
             linkedin: "https://linkedin.com/in/y-dilipkumar",
             github: "https://github.com/Dilipkumar9392",
-            email: "mailto:y.dilipkumar939245@gmail.com"
+            email: "mailto:y.dilipkumar939245@gmail.com",
+            phone: "tel:+919392457449"
         }
     },
     education: [
