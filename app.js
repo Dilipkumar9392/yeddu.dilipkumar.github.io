@@ -520,7 +520,7 @@ function initNavigation() {
         }
     });
 
-    // Show default section on load (SPA active section with History API integration)
+    // Show default section on load (SPA active section with History API & sessionStorage persistence)
     function showSection(targetId, pushToHistory = true) {
         sections.forEach(section => {
             if (section.getAttribute("id") === targetId) {
@@ -540,11 +540,20 @@ function initNavigation() {
             }
         });
 
+        // Persist active section in sessionStorage so Desktop mode switches/reloads stay on current page
+        try {
+            sessionStorage.setItem("active_portfolio_section", targetId);
+        } catch (err) {}
+
         // Update browser URL hash & history stack
         if (pushToHistory) {
             const newHash = `#${targetId}`;
             if (window.location.hash !== newHash) {
                 history.pushState({ section: targetId }, "", newHash);
+            }
+        } else {
+            if (window.location.hash !== `#${targetId}` && targetId !== "home") {
+                history.replaceState({ section: targetId }, "", `#${targetId}`);
             }
         }
 
@@ -559,17 +568,22 @@ function initNavigation() {
         window.scrollTo({ top: 0, behavior: 'instant' });
     }
 
-    // Initialize display with Home or URL hash
+    // Initialize display with Hash, Saved Session, or default Home
     let initialSection = "home";
     const hash = window.location.hash.replace("#", "");
+    let savedSection = null;
+    try { savedSection = sessionStorage.getItem("active_portfolio_section"); } catch (e) {}
+
     if (hash && document.getElementById(hash)) {
         initialSection = hash;
+    } else if (savedSection && document.getElementById(savedSection)) {
+        initialSection = savedSection;
     }
     showSection(initialSection, false);
 
     // Listen for browser Back/Forward navigation buttons
     window.addEventListener("popstate", (e) => {
-        const currentSection = window.location.hash.replace("#", "") || "home";
+        const currentSection = window.location.hash.replace("#", "") || sessionStorage.getItem("active_portfolio_section") || "home";
         if (document.getElementById(currentSection)) {
             showSection(currentSection, false);
         }
