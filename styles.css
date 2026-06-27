@@ -424,12 +424,18 @@ button, input, textarea {
 }
 
 .typing-container {
-    font-size: clamp(1.25rem, 2.5vw, 1.8rem);
+    font-size: clamp(1.1rem, 2.5vw, 1.8rem);
     font-weight: 600;
     margin-bottom: 1.5rem;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     color: var(--text-secondary);
+}
+
+.typing-static {
+    white-space: nowrap;
+    margin-right: 0.25rem;
 }
 
 .typing-dynamic {
@@ -1829,35 +1835,39 @@ a.info-value:hover {
     }
 
     /* Mobile Experience Timeline Overrides */
+    #timeline-svg {
+        display: none !important;
+    }
+
     .experience-timeline-journey {
-        padding: 1rem 0;
+        padding: 0.5rem 0;
     }
 
     .experience-journey-container {
-        gap: 1.75rem;
+        gap: 1.5rem;
     }
 
     .timeline-item.left, 
     .timeline-item.right {
-        flex-direction: row !important;
-        justify-content: flex-start !important;
-        gap: 1.25rem;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        width: 100% !important;
+        margin: 0 !important;
+        gap: 0 !important;
     }
 
     .timeline-card {
         width: 100% !important;
         margin: 0 !important;
-        padding: 1rem 1.25rem !important;
+        padding: 1.35rem 1.5rem !important;
+        border-left: 4px solid var(--accent-purple) !important;
+        background: var(--bg-card) !important;
+        border-radius: var(--radius-md) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
     }
 
     .timeline-icon-circle {
-        width: 46px !important;
-        height: 46px !important;
-    }
-
-    .timeline-icon-circle svg {
-        width: 18px !important;
-        height: 18px !important;
+        display: none !important;
     }
 
     .timeline-card::after {
