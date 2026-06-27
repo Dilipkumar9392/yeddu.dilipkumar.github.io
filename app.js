@@ -710,6 +710,9 @@ function initContactForm() {
         const subject = document.getElementById("form-subject").value;
         const message = document.getElementById("form-message").value;
 
+        // Generate IST Timestamp string
+        const istTimeStr = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata", dateStyle: "full", timeStyle: "medium" }) + " (IST)";
+
         // Post data using FormSubmit's AJAX API
         fetch("https://formsubmit.co/ajax/y.dilipkumar939245@gmail.com", {
             method: "POST",
@@ -718,6 +721,7 @@ function initContactForm() {
                 "Accept": "application/json"
             },
             body: JSON.stringify({
+                "Submitted At (IST)": istTimeStr,
                 name: name,
                 email: email,
                 subject: subject,
@@ -827,10 +831,77 @@ function initChatbot() {
         chatInput.value = "";
     });
 
+    // Interactive Email Assistant State Machine
+    let emailState = { step: "idle", name: "", email: "", message: "" };
+
+    function sendChatbotEmailDirectly(name, email, message) {
+        const istTimeStr = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata", dateStyle: "full", timeStyle: "medium" }) + " (IST)";
+        fetch("https://formsubmit.co/ajax/y.dilipkumar939245@gmail.com", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({
+                "Submitted At (IST)": istTimeStr,
+                "Source": "AI Chatbot Assistant",
+                "name": name,
+                "email": email,
+                "subject": "New Direct Message from Chatbot Visitor (" + name + ")",
+                "message": message
+            })
+        }).then(res => res.json()).then(data => console.log("[Chatbot] Email sent successfully:", data)).catch(err => console.error("[Chatbot] Email send error:", err));
+    }
+
     // Master function to handle user message submissions with multi-model fallback routing
     function handleUserSubmit(text) {
         // Render User Message
         addUserMessage(text);
+
+        const lowerText = text.toLowerCase().trim();
+
+        // 1. Check if user is in an active email collection state machine
+        if (emailState.step === "awaiting_name") {
+            emailState.name = text;
+            emailState.step = "awaiting_email";
+            const botMsg = `Thanks, ${text}! Please enter your email address so Dilip can reply back to you:`;
+            addBotMessage(botMsg);
+            conversationHistory.push({ role: "model", parts: [{ text: botMsg }] });
+            return;
+        }
+        if (emailState.step === "awaiting_email") {
+            emailState.email = text;
+            emailState.step = "awaiting_message";
+            const botMsg = `Got it! Now type the message or project inquiry you want me to deliver directly to Dilip's inbox:`;
+            addBotMessage(botMsg);
+            conversationHistory.push({ role: "model", parts: [{ text: botMsg }] });
+            return;
+        }
+        if (emailState.step === "awaiting_message") {
+            emailState.message = text;
+            const senderName = emailState.name;
+            const senderEmail = emailState.email;
+            emailState.step = "idle";
+
+            const typingIndicator = showTypingIndicator();
+            sendChatbotEmailDirectly(senderName, senderEmail, text);
+            setTimeout(() => {
+                typingIndicator.remove();
+                const botMsg = `✅ Thank you, ${senderName}! Your message has been delivered directly to Dilip's inbox (y.dilipkumar939245@gmail.com). Dilip will review it and get back to you at ${senderEmail} shortly!`;
+                addBotMessage(botMsg);
+                conversationHistory.push({ role: "model", parts: [{ text: botMsg }] });
+            }, 800);
+            return;
+        }
+
+        // 2. Check if user wants to trigger sending a message / emailing Dilip
+        if (lowerText.includes("send message") || lowerText.includes("send email") || lowerText.includes("email dilip") || lowerText.includes("contact dilip") || lowerText.includes("leave message") || lowerText.includes("message dilip") || lowerText.includes("mail dilip")) {
+            emailState.step = "awaiting_name";
+            const botMsg = "I'd be happy to deliver your message directly to Dilip's inbox! Please tell me your name to get started:";
+            addBotMessage(botMsg);
+            conversationHistory.push({ role: "model", parts: [{ text: botMsg }] });
+            return;
+        }
 
         // Fetch Built-in API Key or User override from localStorage
         const geminiApiKey = localStorage.getItem("user_gemini_api_key") || getBuiltInApiKey();
