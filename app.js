@@ -520,8 +520,8 @@ function initNavigation() {
         }
     });
 
-    // Show default section on load (SPA active section)
-    function showSection(targetId) {
+    // Show default section on load (SPA active section with History API integration)
+    function showSection(targetId, pushToHistory = true) {
         sections.forEach(section => {
             if (section.getAttribute("id") === targetId) {
                 section.classList.add("active-section");
@@ -540,6 +540,14 @@ function initNavigation() {
             }
         });
 
+        // Update browser URL hash & history stack
+        if (pushToHistory) {
+            const newHash = `#${targetId}`;
+            if (window.location.hash !== newHash) {
+                history.pushState({ section: targetId }, "", newHash);
+            }
+        }
+
         // Redraw timeline lines if switching to experience/internships
         if (targetId === "experience") {
             setTimeout(() => {
@@ -557,7 +565,15 @@ function initNavigation() {
     if (hash && document.getElementById(hash)) {
         initialSection = hash;
     }
-    showSection(initialSection);
+    showSection(initialSection, false);
+
+    // Listen for browser Back/Forward navigation buttons
+    window.addEventListener("popstate", (e) => {
+        const currentSection = window.location.hash.replace("#", "") || "home";
+        if (document.getElementById(currentSection)) {
+            showSection(currentSection, false);
+        }
+    });
 
     // Bind all intra-page anchors (navigation, logo, buttons, mouse icon, etc.)
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -565,7 +581,7 @@ function initNavigation() {
             const targetId = anchor.getAttribute("href").replace("#", "");
             if (targetId && document.getElementById(targetId)) {
                 e.preventDefault();
-                showSection(targetId);
+                showSection(targetId, true);
                 
                 // Close mobile menu if open
                 menu.classList.remove("mobile-open");
