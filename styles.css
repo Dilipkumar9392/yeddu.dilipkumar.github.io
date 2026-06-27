@@ -1776,13 +1776,17 @@ a.info-value:hover {
         border-bottom: 1px solid var(--border-color);
         padding: 2rem;
         transform: translateY(-120%);
-        transition: transform var(--transition-normal);
+        transition: transform var(--transition-normal), visibility var(--transition-normal);
         z-index: 999;
         box-shadow: 0 15px 30px var(--shadow-color);
+        visibility: hidden;
+        pointer-events: none;
     }
 
     .nav-menu.mobile-open {
         transform: translateY(0);
+        visibility: visible;
+        pointer-events: auto;
     }
 
     .nav-list {
@@ -2452,17 +2456,34 @@ main section.active-section {
     transform: translateY(0) scale(0.96);
 }
 
+/* Touch Action Optimizations for Mobile */
+button, a, input, select, textarea, .suggestion-chip, .filter-btn, .skill-tab-btn, .chat-bubble-trigger {
+    touch-action: manipulation;
+}
+
 /* Responsive adjustments */
-@media (max-width: 576px) {
+@media (max-width: 768px) {
     .chatbot-widget {
-        bottom: 45px; /* Positioned just above the fixed footer on mobile */
-        right: 20px;
+        bottom: 55px; /* Positioned clearly above footer on mobile */
+        right: 15px;
     }
     
     .chat-window {
-        width: calc(100vw - 40px);
-        height: min(500px, 80vh);
-        right: 0;
-        bottom: 0;
+        width: calc(100vw - 30px);
+        max-width: 380px;
+        height: min(480px, 75vh);
+        position: fixed;
+        bottom: 75px;
+        right: 15px;
+        z-index: 10001;
+    }
+
+    .footer {
+        position: relative !important;
+        margin-top: 2rem;
+    }
+
+    main section.active-section {
+        padding-bottom: 40px !important;
     }
 }
