@@ -64,6 +64,16 @@ function initPersonalDetails() {
         phoneLink.textContent = personal.socialLinks.phone.replace("tel:", "");
     }
 
+    const locationText = document.getElementById("contact-location-text");
+    if (locationText && personal.location) {
+        locationText.textContent = personal.location;
+    }
+
+    const timezoneText = document.getElementById("contact-timezone-text");
+    if (timezoneText && personal.timezone) {
+        timezoneText.textContent = personal.timezone;
+    }
+
     // Fill Footer Links
     document.getElementById("footer-linkedin-link").href = personal.socialLinks.linkedin;
     document.getElementById("footer-github-link").href = personal.socialLinks.github || "#";

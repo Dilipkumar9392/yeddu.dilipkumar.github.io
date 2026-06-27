@@ -12,7 +12,9 @@ const portfolioConfig = {
             github: "https://github.com/Dilipkumar9392",
             email: "mailto:y.dilipkumar939245@gmail.com",
             phone: "tel:+919392457449"
-        }
+        },
+        location: "Tenali, Andhra Pradesh, India",
+        timezone: "IST (Indian Standard Time, UTC+5:30)"
     },
     education: [
         {
